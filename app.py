@@ -4,39 +4,39 @@ import json
 import hmac
 import os
 #from rp_handler_ask_a_phil import handler
-#from google.cloud import texttospeech
-#from google.oauth2 import service_account
+from google.cloud import texttospeech
+from google.oauth2 import service_account
 
 
 
-# @st.cache_resource
-# def get_tts_client():
-#     credentials = service_account.Credentials.from_service_account_info(
-#         st.secrets["gcp_service_account"]
-#     )
-#     return texttospeech.TextToSpeechClient(credentials=credentials)
-#
-# client = get_tts_client()
-#
-# def generate_tts(text):
-#     synthesis_input = texttospeech.SynthesisInput(text=text)
-#
-#     voice = texttospeech.VoiceSelectionParams(
-#         language_code="en-US",
-#         name="en-US-Neural2-J"
-#     )
-#
-#     audio_config = texttospeech.AudioConfig(
-#         audio_encoding=texttospeech.AudioEncoding.MP3
-#     )
-#
-#     response = client.synthesize_speech(
-#         input=synthesis_input,
-#         voice=voice,
-#         audio_config=audio_config
-#     )
-#
-#     return response.audio_content
+@st.cache_resource
+def get_tts_client():
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"]
+    )
+    return texttospeech.TextToSpeechClient(credentials=credentials)
+
+client = get_tts_client()
+
+def generate_tts(text):
+    synthesis_input = texttospeech.SynthesisInput(text=text)
+
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="en-US",
+        name="en-US-Neural2-J"
+    )
+
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+
+    response = client.synthesize_speech(
+        input=synthesis_input,
+        voice=voice,
+        audio_config=audio_config
+    )
+
+    return response.audio_content
 
 def on_sidebar_change():
     config = (
@@ -136,16 +136,17 @@ for message in st.session_state.messages:
 
     if message["role"] == "assistant":
         avatar = f"{message['avatar']}"
-    with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"])
-
     # with st.chat_message(message["role"], avatar=avatar):
-    #     col1, col2 = st.columns([7, 2])
-    #     with col1:
-    #         st.markdown(message["content"])
-    #     with col2:
-    #         st.session_state[f"audio_0"] = generate_tts(message["content"])
-    #         st.audio(st.session_state[f"audio_0"], format="audio/mp3")
+    #     st.markdown(message["content"])
+
+    with st.chat_message(message["role"], avatar=avatar):
+        col1, col2 = st.columns([7, 3])
+        with col1:
+            st.markdown(message["content"])
+        with col2:
+            if message["role"] == "assistant":
+                st.session_state[f"audio_0"] = generate_tts(message["content"])
+                st.audio(st.session_state[f"audio_0"], format="audio/mp3")
 
 
 
@@ -178,13 +179,13 @@ if question := st.chat_input():
     if msg[0] == msg[-1] == '"':
         msg = msg[1:-1]
     with st.chat_message("assistant", avatar=f"{phil}.jpg"):
-        st.markdown(msg)
-        # col1, col2 = st.columns([7, 2])
-        # with col1:
-        #     st.markdown(msg)
-        # with col2:
-        #     st.session_state[f"audio_0"] = generate_tts(msg)
-        #     st.audio(st.session_state[f"audio_0"], format="audio/mp3")
+        #st.markdown(msg)
+        col1, col2 = st.columns([7, 3])
+        with col1:
+            st.markdown(msg)
+        with col2:
+            st.session_state[f"audio_0"] = generate_tts(msg)
+            st.audio(st.session_state[f"audio_0"], format="audio/mp3")
 
 
 
