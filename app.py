@@ -41,7 +41,7 @@ import os
 def on_sidebar_change():
     config = (
         st.session_state.phil,
-        st.session_state.mode
+        #st.session_state.mode
     )
 
     # prevent duplicate triggers
