@@ -118,12 +118,12 @@ with st.sidebar:
         key = "phil",
         on_change = on_sidebar_change
     )
-    mode = st.selectbox(
-        "Which LLM-mode do you want to use?",
-        options = ("Retriever-Augmented Generation", "LLM-only"),
-        key = "mode",
-        on_change = on_sidebar_change
-    )
+    # mode = st.selectbox(
+    #     "Which LLM-mode do you want to use?",
+    #     options = ("Retriever-Augmented Generation", "LLM-only"),
+    #     key = "mode",
+    #     on_change = on_sidebar_change
+    # )
 if st.session_state["messages"] == []:
     st.session_state["messages"].append({"role": "assistant",
                                          "content": f"I am the philosopher {phil}. Please submit your question below.",
@@ -153,7 +153,7 @@ for message in st.session_state.messages:
 if question := st.chat_input():
     # Preparing payload for the API request based on user input and sidebar configurations
     data = {
-        'input': {"question":question, "philosopher":phil, "mode":mode},
+        'input': {"question":question, "philosopher":phil},
         'stream': True
     }
     # Update session state with user message
