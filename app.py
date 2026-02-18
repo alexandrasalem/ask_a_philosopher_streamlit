@@ -177,7 +177,7 @@ if question := st.chat_input():
     st.chat_message("user").write(question)
     # Send API request and process the streaming response
     #response = handler(data)
-    response = requests.post('https://api.runpod.ai/v2/38z94rrm7q5n9c/runsync', stream=True, json=data, headers=headers)
+    response = requests.post('https://api.runpod.ai/v2/38z94rrm7q5n9c/runsync', stream=True, json=data, headers=headers, timeout=180)
     #msg, sim = response['output']
     for line in response.iter_lines():
         # Filter out keep-alive newlines
