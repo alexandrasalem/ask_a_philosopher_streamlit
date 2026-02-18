@@ -7,14 +7,28 @@ import os
 from google.cloud import texttospeech
 from google.oauth2 import service_account
 
-
-
 @st.cache_resource
 def get_tts_client():
-    credentials = service_account.Credentials.from_service_account_info(
-        os.environ.get("gcp_service_account")
-    )
-    return texttospeech.TextToSpeechClient(credentials=credentials)
+    # Option 1: Render (JSON stored in env var)
+    if "GOOGLE_CREDS_JSON" in os.environ:
+        creds_info = json.loads(os.environ["GOOGLE_CREDS_JSON"])
+        credentials = service_account.Credentials.from_service_account_info(
+            creds_info
+        )
+        return texttospeech.TextToSpeechClient(credentials=credentials)
+
+    # Option 2: Local dev (uses file path)
+    elif "ask-a-phil-tts-78b6e7e14042.json" in os.listdir():
+        with open('ask-a-phil-tts-78b6e7e14042.json', 'r') as file:
+            # json.load() reads the file content and converts it to a Python object
+            creds_info = json.load(file)
+        credentials = service_account.Credentials.from_service_account_info(
+            creds_info
+        )
+        return texttospeech.TextToSpeechClient(credentials=credentials)
+
+    else:
+        raise RuntimeError("Google credentials not configured.")
 
 client = get_tts_client()
 
