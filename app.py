@@ -12,7 +12,7 @@ from google.oauth2 import service_account
 @st.cache_resource
 def get_tts_client():
     credentials = service_account.Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"]
+        os.environ.get("gcp_service_account")
     )
     return texttospeech.TextToSpeechClient(credentials=credentials)
 
