@@ -190,8 +190,11 @@ if question := st.chat_input():
     st.session_state.messages.append({"role": "assistant", "content": msg, "avatar": f"{phil}.jpg"})
     # Display the assistant's response in chat
 
-    if msg[0] == msg[-1] == '"':
-        msg = msg[1:-1]
+    # if msg[0] == msg[-1] == '"':
+    #     msg = msg[1:-1]
+    msg.replace('"', '')
+    msg.replace('“', '')
+    msg.replace('”', '')
     with st.chat_message("assistant", avatar=f"{phil}.jpg"):
         #st.markdown(msg)
         col1, col2 = st.columns([7, 3])
