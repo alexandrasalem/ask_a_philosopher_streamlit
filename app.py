@@ -6,6 +6,7 @@ import os
 #from rp_handler_ask_a_phil import handler
 from google.cloud import texttospeech
 from google.oauth2 import service_account
+import time
 
 @st.cache_resource
 def get_tts_client():
@@ -178,6 +179,26 @@ if question := st.chat_input():
     # Send API request and process the streaming response
     #response = handler(data)
     response = requests.post('https://api.runpod.ai/v2/38z94rrm7q5n9c/runsync', stream=True, json=data, headers=headers, timeout=1800)
+    response_json = response.json()
+    job_id = response_json["id"]
+
+    while True:
+        status_res = requests.get(
+            f"https://api.runpod.ai/v2/38z94rrm7q5n9c/status/{job_id}",
+            headers=headers
+        ).json()
+
+        status = status_res["status"]
+
+        if status == "COMPLETED":
+            print(status_res["output"])
+            break
+        elif status in ["FAILED", "CANCELLED"]:
+            print("Job failed")
+            break
+
+        time.sleep(2)
+
     #msg, sim = response['output']
     for line in response.iter_lines():
         # Filter out keep-alive newlines
