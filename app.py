@@ -213,9 +213,9 @@ if question := st.chat_input():
 
     # if msg[0] == msg[-1] == '"':
     #     msg = msg[1:-1]
-    msg.replace('"', '')
-    msg.replace('“', '')
-    msg.replace('”', '')
+    msg = msg.replace('"', '')
+    msg = msg.replace('“', '')
+    msg = msg.replace('”', '')
     with st.chat_message("assistant", avatar=f"{phil}.jpg"):
         #st.markdown(msg)
         col1, col2 = st.columns([7, 3])
